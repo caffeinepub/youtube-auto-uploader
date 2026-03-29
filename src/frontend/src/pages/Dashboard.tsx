@@ -25,50 +25,12 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-// 1 hour between uploads, 24 per day max
+// 1 hour between uploads — no daily cap (YouTube API quota is the real limit)
 const UPLOAD_INTERVAL_MS = 3_600_000;
-const MAX_UPLOADS_PER_DAY = 24;
+const MAX_UPLOADS_PER_DAY = 9999;
 
 interface DashboardProps {
   channelId: string;
-}
-
-function CircularProgress({ value, max }: { value: number; max: number }) {
-  const pct = Math.min(value / max, 1);
-  const r = 40;
-  const circ = 2 * Math.PI * r;
-  const dash = pct * circ;
-
-  return (
-    <svg
-      width="100"
-      height="100"
-      viewBox="0 0 100 100"
-      className="-rotate-90"
-      aria-label={`${value} of ${max} uploads`}
-    >
-      <title>{`${value} of ${max} uploads today`}</title>
-      <circle
-        cx="50"
-        cy="50"
-        r={r}
-        fill="none"
-        stroke="oklch(var(--border))"
-        strokeWidth="8"
-      />
-      <circle
-        cx="50"
-        cy="50"
-        r={r}
-        fill="none"
-        stroke="oklch(var(--yt-red))"
-        strokeWidth="8"
-        strokeDasharray={`${dash} ${circ}`}
-        strokeLinecap="round"
-        className="transition-all duration-500"
-      />
-    </svg>
-  );
 }
 
 export function Dashboard({ channelId }: DashboardProps) {
@@ -390,19 +352,17 @@ export function Dashboard({ channelId }: DashboardProps) {
         >
           <Card data-ocid="dashboard.card" className="bg-card border-border">
             <CardContent className="p-5 flex items-center gap-5">
-              <CircularProgress
-                value={uploadsToday}
-                max={MAX_UPLOADS_PER_DAY}
-              />
+              <div className="w-[100px] h-[100px] flex items-center justify-center shrink-0">
+                <div className="w-16 h-16 rounded-full bg-yt-red/10 border-2 border-yt-red/30 flex items-center justify-center">
+                  <Upload size={28} className="text-yt-red" />
+                </div>
+              </div>
               <div>
                 <div className="text-muted-foreground text-sm mb-1">
                   Today&apos;s Uploads
                 </div>
                 <div className="font-display text-3xl font-bold text-foreground">
-                  {uploadsToday}{" "}
-                  <span className="text-muted-foreground text-lg font-normal">
-                    / {MAX_UPLOADS_PER_DAY}
-                  </span>
+                  {uploadsToday}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   Videos uploaded today

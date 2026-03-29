@@ -55,7 +55,7 @@ export function Settings({ channelId, onSaved }: SettingsProps) {
     if (!code || !clientId || !clientSecret) return;
     sessionStorage.removeItem("oauth_code");
     setIsExchanging(true);
-    const redirectUri = window.location.origin + window.location.pathname;
+    const redirectUri = window.location.origin;
     fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -90,7 +90,7 @@ export function Settings({ channelId, onSaved }: SettingsProps) {
       toast.error("Enter Client ID first");
       return;
     }
-    const redirectUri = window.location.origin + window.location.pathname;
+    const redirectUri = window.location.origin;
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
@@ -278,7 +278,7 @@ export function Settings({ channelId, onSaved }: SettingsProps) {
                 Add this as an Authorized Redirect URI in Google Cloud Console:
               </p>
               <code className="block bg-secondary rounded px-3 py-2 text-sm text-blue-link break-all">
-                {window.location.origin + window.location.pathname}
+                {window.location.origin}
               </code>
             </CardContent>
           </Card>
